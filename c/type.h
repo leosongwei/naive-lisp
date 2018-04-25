@@ -9,6 +9,7 @@
 #define SYMBOL 3
 #define CHAR 4
 #define ARRAY 5
+#define REF 6
 
 /* meta data of obj */
 struct obj{
@@ -28,13 +29,30 @@ typedef struct obj obj;
  *   obj | CAR offset (size_t) | CDR offset (size_t)
  * SYMBOL:
  *   obj | length (size_t) | uint_32[length]
+ * ARRAY:
+ *   obj | length (size_t) | obj[length]
+ * REF:
+ *   obj | offset (size_t) | array offset (size_t)
+ *   If the value referred is not in an array, the array offset is 0.
  */
-
 
 struct array{
 	uint64_t size;
 	obj* members;
 };
 typedef struct array array;
+
+/* Closure is implemented as array.
+ * * The compiler knows which reference to a variable is
+ *   a reference to a variable in a closure.
+ * * The compiler knows which variable should be closed
+ *   the closure of current stack.
+ * * To access a variable in a closure. Firstly, find the
+ *   closure array. Secondly, obtain or change the atomic
+ *   value (or reference value if is array) from the
+ *   closure.
+ *
+ * Struct is also implemented as array.
+ */
 
 #endif

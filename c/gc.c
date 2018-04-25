@@ -11,15 +11,14 @@ int alloc_BOOL(void* memblk, size_t current)
 {
 }
 
-
-
 int move_obj
 (void* from, size_t from_size, void* to, size_t to_size,
- size_t from_current, size_t to_current)
+ size_t* from_current, size_t* to_current)
 {
-	obj* current = (obj*)((size_t)from + from_current);
-	obj* new = (obj*)((size_t)to + to_current);
+	obj* current = (obj*)((size_t)from + *from_current);
+	obj* new = (obj*)((size_t)to + *to_current);
 
+	/* obtain size to increase to_current */
 	size_t size = sizeof(obj);
 	switch(current->type){
 	BOOL:
@@ -38,7 +37,21 @@ int move_obj
 	CHAR:
 		size += sizeof(int32_t);
 		break;
+	ARRAY:
+		size_t* length = (size_t*)((size_t)current + sizeof(obj));
+		size += sizeof(size_t) + (*length) * sizeof(obj);
+	REF:
+		size += 2 * sizeof(size_t);
+		break;
 	}
+	*to_current += size;
+
+	/* recursively move the object */
+	// case: move atom
+	// case: move array
+	// case: move reference
+
+	/* mark the current obj as "copied" */
 
 	return 0;
 }
