@@ -1,5 +1,4 @@
-#include <stdlib.h>
-#include "type.h"
+#include "defines.h"
 
 /*
  * GC
@@ -7,9 +6,11 @@
  * Copy GC.
  */
 
+/*
 int alloc_BOOL(void* memblk, size_t current)
 {
 }
+*/
 
 int move_obj
 (void* from, size_t from_size, void* to, size_t to_size,
@@ -21,26 +22,26 @@ int move_obj
 	/* obtain size to increase to_current */
 	size_t size = sizeof(obj);
 	switch(current->type){
-	BOOL:
+	case BOOL:
 		size += sizeof(char);
 		break;
-	CONS:
+	case CONS:
 		size += 2 * sizeof(size_t);
 		break;
-	INT32:
+	case INT32:
 		size += sizeof(int32_t);
 		break;
-	SYMBOL:
-		size_t* length = (size_t*)((size_t)current + sizeof(obj));
-		size += sizeof(size_t) + (*length) * sizeof(uint32_t);
+	case SYMBOL:
+		size_t length = (size_t)current + sizeof(obj);
+		size += sizeof(size_t) + length * sizeof(uint32_t);
 		break;
-	CHAR:
+	case CHAR:
 		size += sizeof(int32_t);
 		break;
-	ARRAY:
-		size_t* length = (size_t*)((size_t)current + sizeof(obj));
-		size += sizeof(size_t) + (*length) * sizeof(obj);
-	REF:
+	case ARRAY:
+		size_t length = (size_t)current + sizeof(obj);
+		size += sizeof(size_t) + length * sizeof(obj);
+	case REF:
 		size += 2 * sizeof(size_t);
 		break;
 	}
@@ -56,6 +57,7 @@ int move_obj
 	return 0;
 }
 
+/*
 int full_gc
 (void* from, size_t from_size,
  void* to, size_t to_size)
@@ -84,3 +86,4 @@ int full_gc
 
 	return 0;
 }
+*/
