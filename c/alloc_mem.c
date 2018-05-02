@@ -15,7 +15,7 @@ mem_info alloc_memory(size_t length)
 		return info;
 	}
 	info.len = length;
-	info.avail = 1; // 0 is NULL, don't care this minor waste.
+	info.cursor = 1; // 0 is NULL, don't care this minor waste.
 	return info;
 }
 

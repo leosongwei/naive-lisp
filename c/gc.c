@@ -6,84 +6,84 @@
  * Copy GC.
  */
 
-/*
-int alloc_BOOL(void* memblk, size_t current)
+size_t length_CONS()
 {
+	return sizeof(obj) + 2 * sizeof(size_t);
 }
-*/
 
-int move_obj
-(void* from, size_t from_size, void* to, size_t to_size,
- size_t* from_current, size_t* to_current)
+int alloc_CONS(mem_info* mem)
 {
-	obj* current = (obj*)((size_t)from + *from_current);
-	obj* new = (obj*)((size_t)to + *to_current);
-
-	/* obtain size to increase to_current */
-	size_t size = sizeof(obj);
-	switch(current->type){
-	case BOOL:
-		size += sizeof(char);
-		break;
-	case CONS:
-		size += 2 * sizeof(size_t);
-		break;
-	case INT32:
-		size += sizeof(int32_t);
-		break;
-	case SYMBOL:
-		size_t length = (size_t)current + sizeof(obj);
-		size += sizeof(size_t) + length * sizeof(uint32_t);
-		break;
-	case CHAR:
-		size += sizeof(int32_t);
-		break;
-	case ARRAY:
-		size_t length = (size_t)current + sizeof(obj);
-		size += sizeof(size_t) + length * sizeof(obj);
-	case REF:
-		size += 2 * sizeof(size_t);
-		break;
+	if(mem->cursor + length_CONS() < mem->len){
+		obj* head = (obj*)(mem->cursor + (size_t)mem->ptr);
+		head->type = CONS;
+		head->copied = 0;
+		size_t* offset =
+			(size_t*)((size_t)head + sizeof(obj));
+		offset[0] = (size_t)symbol_nil;
+		offset[1] = (size_t)symbol_nil;
+		mem->cursor += length_CONS();
+		return 0;
+	}else{
+		return -1;
 	}
-	*to_current += size;
-
-	/* recursively move the object */
-	// case: move atom
-	// case: move array
-	// case: move reference
-
-	/* mark the current obj as "copied" */
-
-	return 0;
 }
 
-/*
-int full_gc
-(void* from, size_t from_size,
- void* to, size_t to_size)
+size_t length_INT32()
 {
-	size_t from_current = 0;
-	size_t to_current = 0;
-	size_t current_size;
-
-	while(from_current < from_size){
-		obj* current = (obj*)((size_t)from + from_current);
-		switch(obj->type){
-		BOOL:
-			break;
-		CONS:
-			break;
-		INT32:
-			break;
-		SYMBOL:
-			break;
-		CHAR:
-			break;
-		ARRAY:
-			break;
-		}
-	}
-
-	return 0;
+	return sizeof(obj) + sizeof(int32_t);
 }
-*/
+
+int alloc_INT32(mem_info* mem)
+{
+	if(mem->cursor + length_INT32() < mem->len){
+		obj* head = (obj*)(mem->cursor + (size_t)mem->ptr);
+		head->type = INT32;
+		head->copied = 0;
+		int32_t* integer = (int32_t*)((size_t)head + sizeof(obj));
+		*integer = 0;
+		mem->cursor += length_INT32();
+		return 0;
+	}else{
+		return -1;
+	}
+}
+
+size_t length_CHAR()
+{
+	return sizeof(obj) + sizeof(uint32_t);
+}
+
+int alloc_CHAR(mem_info* mem)
+{
+	if(mem->cursor + length_CHAR() < mem->len){
+		obj* head = (obj*)(mem->cursor + (size_t)mem->ptr);
+		head->type = CHAR;
+		head->copied = 0;
+		uint32_t* character = (uint32_t*)((size_t)head + sizeof(obj));
+		*character = 0;
+		mem->cursor += length_CHAR();
+		return 0;
+	}else{
+		return -1;
+	}
+}
+
+size_t length_SYMBOL(size_t length)
+{
+	return sizeof(obj) + sizeof(size_t) + sizeof(uint32_t) * length;
+}
+
+int alloc_SYMBOL(mem_info* mem, size_t length)
+{
+	if(mem->cursor + length_SYMBOL(length) < mem->len){
+		obj* head = (obj*)(mem->cursor + (size_t)mem->ptr);
+		head->type = SYMBOL;
+		head->copied = 0;
+		size_t* len = (size_t*)((size_t)head + sizeof(obj));
+		*len = length;
+		mem->cursor += length_SYMBOL(length);
+		return 0;
+	}else{
+		return -1;
+	}
+}
