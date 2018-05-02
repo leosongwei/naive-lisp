@@ -17,10 +17,10 @@ int alloc_CONS(mem_info* mem)
 		obj* head = (obj*)(mem->cursor + (size_t)mem->ptr);
 		head->type = CONS;
 		head->copied = 0;
-		void* offset =
-			(void*)((size_t)head + sizeof(obj));
-		offset[0] = symbol_nil;
-		offset[1] = symbol_nil;
+		size_t* offset =
+			(size_t*)((size_t)head + sizeof(obj));
+		offset[0] = (size_t)symbol_nil;
+		offset[1] = (size_t)symbol_nil;
 		mem->cursor += length_CONS();
 		return 0;
 	}else{
@@ -105,9 +105,9 @@ int alloc_ARRAY(mem_info* mem, size_t length)
 		head->copied = 0;
 		size_t* len = (size_t*)((size_t)head + sizeof(obj));
 		*len = length;
-		void* ptrs = (void*)((size_t)len + sizeof(size_t));
+		size_t* ptrs = (size_t*)((size_t)len + sizeof(size_t));
 		for(size_t i=0; i<length; i++){
-			ptrs[i] = symbol_nil;
+			ptrs[i] = (size_t)symbol_nil;
 		}
 		mem->cursor += length_ARRAY(length);
 		return 0;
