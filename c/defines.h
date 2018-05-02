@@ -12,6 +12,8 @@
 
 extern void* symbol_t;
 extern void* symbol_nil;
+extern mem_info* mem_runtime;
+extern size_t mem_limit;
 
 #define CONS 1
 #define INT32 2

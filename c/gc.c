@@ -1,10 +1,14 @@
 #include "defines.h"
+#include "gc.h"
 
 /*
  * GC
  * ==
  * Copy GC.
  */
+
+mem_info* mem_runtime;
+size_t mem_limit;
 
 size_t length_CONS()
 {
@@ -142,4 +146,19 @@ int alloc_FUNCTION(mem_info* mem, size_t binary_length)
 	}else{
 		return -1;
 	}
+}
+
+int alloc_obj(char type, size_t arg)
+{
+	// try alloc
+	// if can not
+	// call gc
+	// try alloc again
+	// if can not
+	// return -1; // can not handle this!
+	return 0;
+}
+
+int full_gc()
+{
 }
