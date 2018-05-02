@@ -30,7 +30,7 @@ typedef struct obj obj;
 
 /*
  * CONS:
- *   obj | CAR_offset(size_t) | CDR_offset(size_t)
+ *   obj | CAR_ptr(void*) | CDR_ptr(void*)
  * INT32:
  *   obj | int32_t
  * CHAR:
@@ -38,13 +38,13 @@ typedef struct obj obj;
  * SYMBOL
  *   obj | length(size_t) | uint32_t[length]
  * ARRAY:
- *   obj | length(size_t) | offsets size_t[length]
+ *   obj | length(size_t) | ptrs (void*)[length]
  * FUNCTION:
  *   obj | Arg_NUM(char) | length(size_t) | x86_64 op code
  * CLOSURE:
- *   obj | ARG_NUM(char) | func_offset(size_t)
+ *   obj | ARG_NUM(char) | func_ptr(void*)
  *   | value_num(size_t)
- *   | values_offsets size_t[length]
+ *   | values_ptr (void*)[length]
  */
 
 struct mem_info {
